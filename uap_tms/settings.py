@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'accounts',
     #'buses',
     #'registrations',
-    #'tracking',
+    'tracking',
 
     # Third party apps
     'crispy_forms',
