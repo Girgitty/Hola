@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bus, BusSchedule, Route, Registration
+from .models import BusSchedule, Route, Registration
 
 @admin.register(Bus)
 class BusAdmin(admin.ModelAdmin):
