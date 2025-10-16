@@ -1,18 +1,28 @@
 from django.urls import path
 from . import views
 
-app_name = 'buses'
-
 urlpatterns = [
-    path('', views.bus_list, name='bus_list'),
-    path('<int:bus_id>/', views.bus_detail, name='bus_detail'),
-    path('routes/', views.route_list, name='route_list'),
-    path('schedules/', views.schedule_list, name='schedule_list'),
+    # Bus registration flow
+    path('registration/', views.bus_registration_view, name='bus_registration'),
+    path('complete-profile/', views.complete_profile_view, name='complete_profile'),
+    path('payment/<int:registration_id>/', views.payment_view, name='payment'),
 
-    # Authority URLs
-    path('manage/', views.manage_buses, name='manage_buses'),
-    path('add/', views.add_bus, name='add_bus'),
-    path('<int:bus_id>/edit/', views.edit_bus, name='edit_bus'),
-    path('<int:bus_id>/delete/', views.delete_bus, name='delete_bus'),
-    path('schedule/add/', views.add_schedule, name='add_schedule'),
+    # Bus schedules and routes
+    path('schedules/', views.view_schedules, name='view_schedules'),
+    path('routes/', views.view_routes, name='view_routes'),
+
+    # User registrations management
+    path('my-registrations/', views.my_registrations_view, name='my_registrations'),
+    path('cancel-registration/<int:registration_id>/', views.cancel_registration_view, name='cancel_registration'),
+
+    # Admin/Authority views
+    path('manage-buses/', views.manage_buses_view, name='manage_buses'),
+    path('add-bus/', views.add_bus_view, name='add_bus'),
+    path('edit-bus/<int:bus_id>/', views.edit_bus_view, name='edit_bus'),
+    path('delete-bus/<int:bus_id>/', views.delete_bus_view, name='delete_bus'),
+
+    # Bus schedules management
+    path('manage-schedules/', views.manage_schedules_view, name='manage_schedules'),
+    path('add-schedule/', views.add_schedule_view, name='add_schedule'),
+    path('edit-schedule/<int:schedule_id>/', views.edit_schedule_view, name='edit_schedule'),
 ]
