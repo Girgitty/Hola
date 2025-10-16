@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 
 
 
-class Buses(models.Model):
+class Bus(models.Model):
     BUS_STATUS_CHOICES = (
         ('active', 'Active'),
         ('inactive', 'Inactive'),
