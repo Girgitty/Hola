@@ -86,3 +86,4 @@ class Registration(models.Model):
 
         return f"{self.user.username} - {self.schedule}"
 
+from django.conf import settings
