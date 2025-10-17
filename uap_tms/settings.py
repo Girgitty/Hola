@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     #'crispy_bootstrap4',
 
     'buses',
-    #'tracking',
+    'tracking',
     'accounts',
     #'registrations',
 ]
