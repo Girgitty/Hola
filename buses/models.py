@@ -3,9 +3,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from django.db import models
-from django.contrib.auth.models import User
-
 
 class Bus(models.Model):
     bus_number = models.CharField(max_length=20, unique=True)
@@ -22,9 +19,10 @@ class Route(models.Model):
     route_name = models.CharField(max_length=100)
     start_point = models.CharField(max_length=200)
     end_point = models.CharField(max_length=200)
-    stops = models.TextField(help_text="Comma separated list of stops")
+    stops = models.TextField(help_text="Comma separated list of stops", default='', blank=True)
     # distance = models.FloatField()  # TEMPORARILY COMMENTED OUT
-    estimated_time = models.IntegerField(help_text="Estimated time in minutes")
+    # Set a default so existing rows get a sensible value when migrating
+    estimated_time = models.IntegerField(help_text="Estimated time in minutes", default=0)
 
     def __str__(self):
         return self.route_name
@@ -59,38 +57,4 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.schedule}"
-class Registration(models.Model):
-
-    STATUS_CHOICES = (
-
-        ('pending', 'Pending'),
-
-        ('approved', 'Approved'),
-
-        ('rejected', 'Rejected'),
-
-    )
-
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-
-    schedule = models.ForeignKey(BusSchedule, on_delete=models.CASCADE)
-
-    registration_date = models.DateTimeField(auto_now_add=True)
-
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-
-    
-
-    class Meta:
-
-        unique_together = ['user', 'schedule']
-
-    
-
-    def __str__(self):
-
-        return f"{self.user.username} - {self.schedule}"
-
-from django.contrib.auth import get_user_model
-User = get_user_model()
 

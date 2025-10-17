@@ -66,17 +66,29 @@ WSGI_APPLICATION = 'uap_tms.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'uap_tms_db',
-        'USER': 'root',  # or 'root' if using root
-        'PASSWORD': 'root123',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# If you want to use MySQL instead of SQLite for development, replace the
+# DATABASES block above with the following and ensure MySQL server is
+# running, the database/user exist, and a MySQL driver (PyMySQL or
+# mysqlclient) is installed in your virtualenv.
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'uap_tms_db',
+#         'USER': 'tms_user',
+#         'PASSWORD': 'tms_password_here',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
