@@ -8,6 +8,8 @@ class Bus(models.Model):
     bus_number = models.CharField(max_length=20, unique=True)
     bus_name = models.CharField(max_length=100)
     capacity = models.IntegerField()
+    # whether this bus is available for student bookings
+    is_available = models.BooleanField(default=True)
     driver_name = models.CharField(max_length=100)
     driver_contact = models.CharField(max_length=15)
 
@@ -33,6 +35,8 @@ class BusSchedule(models.Model):
     route = models.ForeignKey(Route, on_delete=models.CASCADE)
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
+    # track how many seats are available for the schedule
+    available_seats = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -57,4 +61,18 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.schedule}"
+
+
+class FleetSettings(models.Model):
+    """A tiny singleton model to store fleet-level settings like how many buses
+    are available for student use. Keeping it in the DB makes it editable via
+    the admin UI.
+    """
+    available_buses = models.PositiveIntegerField(default=0, help_text="How many buses can be allocated for student use")
+
+    def __str__(self):
+        return f"Fleet settings (available buses: {self.available_buses})"
+
+    class Meta:
+        verbose_name = "Fleet Settings"
 

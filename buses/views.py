@@ -5,6 +5,21 @@ from .models import Bus, BusSchedule, Route, Registration
 from django.db.models import Q
 
 
+def bus_list_view(request):
+    """Public list of available buses"""
+    search_query = request.GET.get('search', '')
+    buses = Bus.objects.all()
+    if search_query:
+        buses = buses.filter(Q(bus_number__icontains=search_query) | Q(bus_name__icontains=search_query) | Q(driver_name__icontains=search_query))
+    return render(request, 'buses/bus_list.html', {'buses': buses, 'search_query': search_query})
+
+
+def bus_detail_view(request, bus_id):
+    bus = get_object_or_404(Bus, id=bus_id)
+    schedules = BusSchedule.objects.filter(bus=bus)
+    return render(request, 'buses/bus_detail.html', {'bus': bus, 'schedules': schedules})
+
+
 @login_required
 def bus_registration_view(request):
     """Complete bus registration process"""
@@ -23,15 +38,15 @@ def bus_registration_view(request):
 
         if route_id:
             selected_route = Route.objects.get(id=route_id)
-            schedules = BusSchedule.objects.filter(bus__route_name=selected_route.route_name)
+            schedules = BusSchedule.objects.filter(route=selected_route)
 
         if schedule_id:
             schedule = BusSchedule.objects.get(id=schedule_id)
             # Check if already registered
-            if Registration.objects.filter(user=request.user, bus_schedule=schedule).exists():
+            if Registration.objects.filter(user=request.user, schedule=schedule).exists():
                 messages.error(request, 'You are already registered for this bus schedule.')
             elif schedule.available_seats > 0:
-                registration = Registration(user=request.user, bus_schedule=schedule)
+                registration = Registration(user=request.user, schedule=schedule)
                 registration.save()
                 messages.success(request, 'Successfully registered for the bus!')
                 return redirect('payment', registration_id=registration.id)
@@ -71,7 +86,7 @@ def payment_view(request, registration_id):
         registration.save()
 
         # Update available seats
-        schedule = registration.bus_schedule
+        schedule = registration.schedule
         schedule.available_seats -= 1
         schedule.save()
 
@@ -98,7 +113,7 @@ def view_routes(request):
 @login_required
 def my_registrations_view(request):
     """View user's bus registrations"""
-    registrations = Registration.objects.filter(user=request.user).select_related('bus_schedule__bus')
+    registrations = Registration.objects.filter(user=request.user).select_related('schedule__bus')
     return render(request, 'bus/my_registrations.html', {'registrations': registrations})
 
 
@@ -109,7 +124,7 @@ def cancel_registration_view(request, registration_id):
 
     if request.method == 'POST':
         # Restore available seat
-        schedule = registration.bus_schedule
+        schedule = registration.schedule
         schedule.available_seats += 1
         schedule.save()
 
@@ -129,7 +144,7 @@ def manage_buses_view(request):
         return redirect('dashboard')
 
     buses = Bus.objects.all()
-    return render(request, 'bus/manage_buses.html', {'buses': buses})
+    return render(request, 'buses/manage_buses.html', {'buses': buses})
 
 
 @login_required

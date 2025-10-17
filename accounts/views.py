@@ -43,6 +43,12 @@ class StudentLoginView(LoginView):
     template_name = 'accounts/login.html'
 
     def form_valid(self, form):
+        # Prevent staff/admin users from logging in through the student login form
+        user = form.get_user()
+        if user.is_staff or user.is_superuser:
+            messages.error(self.request, 'Admin accounts must sign in via the admin portal.')
+            return redirect('/admin/login/')
+
         messages.success(self.request, 'You have successfully logged in.')
         return super().form_valid(form)
 
